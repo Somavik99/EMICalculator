@@ -1,0 +1,7 @@
+.home_container{
+display: flex;
+justify-content: center;
+flex-direction: column;
+margin-left: 25%;
+margin-top: 2%;
+}
