@@ -12,16 +12,20 @@ export const FetchCalculateHook = () => {
     interestRate: 8.4,
     Terms: 5.5,
   });
-
+const [Emi, setEmi] = useState([]);
   useEffect(() => {
+    const  cancelToken =  axios.CancelToken.source();
     const fetchEmiApi = async () => {
       try {
         const response = await axios.get(
-          `https://v6.exchangerate-api.com/v6/${process.env.API_KEY}/pair/EUR/GBP`
+          `https://v6.exchangerate-api.com/v6/804a83fa4d1d35310c87b414/latest/USD`,
+        {
+          cancelToken:  cancelToken.token,
+        }
         );
         const EmiData = response.data;
-        setEmiValues(EmiData);
-        console.log(EmiData);
+        setEmi(EmiData);
+        // console.log(EmiData);
       } catch (err: unknown) {
         if (err instanceof Error) {
           console.log(err.message);
@@ -33,7 +37,10 @@ export const FetchCalculateHook = () => {
       }
     };
     fetchEmiApi();
+    return ()=>{
+      cancelToken.cancel('Operation canceled by the user.');
+    }
   }, []);
 
-  return { EmiValues };
+  return { EmiValues,Emi,setEmiValues };
 };

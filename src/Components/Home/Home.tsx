@@ -5,8 +5,35 @@ import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
 import { FetchCalculateHook } from "../Hooks/FetchCalculateHook";
 const Home = () => {
-    const {EmiValues} = FetchCalculateHook();
-    console.log(EmiValues);
+  const { EmiValues, setEmiValues, Emi } = FetchCalculateHook();
+  console.log(Emi);
+
+  const HandleDataChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setEmiValues((prev) => {
+      return { ...prev, [name]: value };
+    });
+  };
+
+  const CalculateEMIValue = () => {
+    const { loanAmount, interestRate, Terms } = EmiValues;
+    const principal = loanAmount;
+    const rate = interestRate;
+    const time = Terms * 12; // Convert years to months
+    const monthlyRate = rate / (12 * 100); // Convert annual rate to monthly and percentage to decimal
+    const emi =
+      (principal * monthlyRate * Math.pow(1 + monthlyRate, time)) /
+      (Math.pow(1 + monthlyRate, time) - 1);
+    const totalPayment = emi * time;
+    const totalInterest = totalPayment - principal;
+    const result = {
+      emi: emi.toFixed(2),
+      totalPayment: totalPayment.toFixed(2),
+      totalInterest: totalInterest.toFixed(2),
+    };
+    console.log("EMI:", result.emi);
+  };
+
   return (
     <>
       <ResponsiveAppBar />
@@ -22,20 +49,34 @@ const Home = () => {
             id="outlined-basic"
             label="Loan Amount"
             variant="outlined"
+            name="loanAmount"
+            type="number"
+            value={EmiValues.loanAmount}
+            onChange={HandleDataChange}
           />
           <TextField
             id="outlined-basic"
             label="Interest Rate(%)"
             variant="outlined"
+            name="interestRate"
+            type="number"
+            onChange={HandleDataChange}
+            value={EmiValues.interestRate}
           />
           <TextField
             id="outlined-basic"
             label="Terms(yrs)"
             variant="outlined"
+            name="Terms"
+            type="number"
+            onChange={HandleDataChange}
+            value={EmiValues.Terms}
           />
         </Box>
         <Stack direction="row" spacing={2}>
-          <Button variant="contained">CALCULATE</Button>
+          <Button variant="contained" onClick={CalculateEMIValue}>
+            CALCULATE
+          </Button>
         </Stack>
       </div>
     </>
