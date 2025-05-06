@@ -14,10 +14,11 @@ export const FetchCalculateHook = () => {
   });
   const fetchEmiApi = async () => {
     try {
-      const responsse = await axios.get(
+      const response = await axios.get(
         `https://v6.exchangerate-api.com/v6/${process.env.API_KEY}/pair/EUR/GBP`
       );
-      const EmiData = responsse.data
+      const EmiData = response.data;
+      setEmiValues(EmiData);
       console.log(EmiData);
     } catch (err) {
       console.log(err);
@@ -26,7 +27,9 @@ export const FetchCalculateHook = () => {
     }
   };
 
-  useEffect(()=>{
-    fetchEmiApi()
-  },[])
+  useEffect(() => {
+    fetchEmiApi();
+  }, []);
+
+  return { EmiValues };
 };
