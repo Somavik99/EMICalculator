@@ -3,8 +3,10 @@ import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
+import { FetchCalculateHook } from "../Hooks/FetchCalculateHook";
 const Home = () => {
-    
+    const {EmiValues} = FetchCalculateHook();
+    console.log(EmiValues);
   return (
     <>
       <ResponsiveAppBar />
