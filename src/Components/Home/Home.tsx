@@ -5,10 +5,20 @@ import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
 import { FetchCalculateHook } from "../Hooks/FetchCalculateHook";
 import { useState } from "react";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
+import type { SelectChangeEvent } from "@mui/material/Select";
 const Home = () => {
   const { EmiValues, setEmiValues, Emi } = FetchCalculateHook();
-  const [emiResult,setEmiResult] = useState<string | null>(null)
+  const [emiResult, setEmiResult] = useState<string | null>(null);
   console.log(Emi);
+  const [currency, setCurrency] = useState("");
+
+  const handleChange = (event: SelectChangeEvent) => {
+    setCurrency(event.target.value as string);
+  };
 
   const HandleDataChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -16,14 +26,14 @@ const Home = () => {
       return { ...prev, [name]: value };
     });
   };
-let emi;
+  let emi;
   const CalculateEMIValue = () => {
     const { loanAmount, interestRate, Terms } = EmiValues;
     const principal = loanAmount;
     const rate = interestRate;
     const time = Terms * 12; // Convert years to months
     const monthlyRate = rate / (12 * 100); // Convert annual rate to monthly and percentage to decimal
-     emi =
+    emi =
       (principal * monthlyRate * Math.pow(1 + monthlyRate, time)) /
       (Math.pow(1 + monthlyRate, time) - 1);
     const totalPayment = emi * time;
@@ -33,7 +43,7 @@ let emi;
       totalPayment: totalPayment.toFixed(2),
       totalInterest: totalInterest.toFixed(2),
     };
-    setEmiResult(result.emi)
+    setEmiResult(result.emi);
     console.log("EMI:", result.emi);
   };
 
@@ -83,8 +93,29 @@ let emi;
         </Stack>
       </div>
       <section>
-        <p style={{marginLeft:"25%",fontSize:"30px"}}>Monthly EMI: <span>${emiResult}</span></p>
-        
+        <p style={{ marginLeft: "25%", fontSize: "30px" }}>
+          Monthly EMI: <span>${emiResult}</span>
+        </p>
+        <Box sx={{ minWidth: 120 }} style={{ marginLeft: "25%" }}>
+          <FormControl fullWidth style={{width:"80px"}} >
+            <InputLabel id="demo-simple-select-label">Currency</InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={currency}
+              label="currency"
+              onChange={handleChange}
+            >
+              <MenuItem value={"USD"}>USD</MenuItem>
+              <MenuItem value={"INR"}>INR</MenuItem>
+              <MenuItem value={"CAD"}>CAD</MenuItem>
+              <MenuItem value={"AUD"}>AUD</MenuItem>
+              <MenuItem value={"EUR"}>EUR</MenuItem>
+              <MenuItem value={"GBP"}>GBP</MenuItem>
+              <MenuItem value={"JPY"}>JPY</MenuItem>
+            </Select>
+          </FormControl>
+        </Box>
       </section>
     </>
   );
