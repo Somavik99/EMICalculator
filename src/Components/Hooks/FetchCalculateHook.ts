@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { API_KEY } from "../APIKey";
 
-interface EmiStats {
+type EmiStats= {
   loanAmount: number;
   interestRate: number;
   Terms: number;
@@ -18,7 +19,7 @@ const [Emi, setEmi] = useState([]);
     const fetchEmiApi = async () => {
       try {
         const response = await axios.get(
-          `https://v6.exchangerate-api.com/v6/804a83fa4d1d35310c87b414/latest/USD`,
+          `https://v6.exchangerate-api.com/v6/${API_KEY}/latest/USD`,
         {
           cancelToken:  cancelToken.token,
         }

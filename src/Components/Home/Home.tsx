@@ -4,8 +4,10 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
 import { FetchCalculateHook } from "../Hooks/FetchCalculateHook";
+import { useState } from "react";
 const Home = () => {
   const { EmiValues, setEmiValues, Emi } = FetchCalculateHook();
+  const [emiResult,setEmiResult] = useState<string | null>(null)
   console.log(Emi);
 
   const HandleDataChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -14,14 +16,14 @@ const Home = () => {
       return { ...prev, [name]: value };
     });
   };
-
+let emi;
   const CalculateEMIValue = () => {
     const { loanAmount, interestRate, Terms } = EmiValues;
     const principal = loanAmount;
     const rate = interestRate;
     const time = Terms * 12; // Convert years to months
     const monthlyRate = rate / (12 * 100); // Convert annual rate to monthly and percentage to decimal
-    const emi =
+     emi =
       (principal * monthlyRate * Math.pow(1 + monthlyRate, time)) /
       (Math.pow(1 + monthlyRate, time) - 1);
     const totalPayment = emi * time;
@@ -31,6 +33,7 @@ const Home = () => {
       totalPayment: totalPayment.toFixed(2),
       totalInterest: totalInterest.toFixed(2),
     };
+    setEmiResult(result.emi)
     console.log("EMI:", result.emi);
   };
 
@@ -79,6 +82,10 @@ const Home = () => {
           </Button>
         </Stack>
       </div>
+      <section>
+        <p style={{marginLeft:"25%",fontSize:"30px"}}>Monthly EMI: <span>${emiResult}</span></p>
+        
+      </section>
     </>
   );
 };
